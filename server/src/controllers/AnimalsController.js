@@ -1,12 +1,14 @@
 import { Auth0Provider } from "@bcwdev/auth0provider";
 import { animalsService } from "../services/AnimalsService.js";
 import BaseController from "../utils/BaseController.js";
+import { showAnimalsService } from "../services/ShowAnimalsService.js";
 
 export class AnimalsController extends BaseController {
   constructor () {
     super('api/animals')
     this.router
       .get('', this.getAnimals)
+      .get('/:animalId/showanimals', this.getAnimalShowsByAnimalId)
       // NOTE middleware, all requests under this .use require a bearer token from your Auth0 
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createAnimal)
@@ -21,6 +23,21 @@ export class AnimalsController extends BaseController {
     try {
       const animals = await animalsService.getAnimals()
       response.send(animals)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+   */
+  async getAnimalShowsByAnimalId(request, response, next) {
+    try {
+      const animalId = request.params.animalId
+      const animalShows = await showAnimalsService.getAnimalShowsByAnimalId(animalId)
+      response.send(animalShows)
     } catch (error) {
       next(error)
     }
