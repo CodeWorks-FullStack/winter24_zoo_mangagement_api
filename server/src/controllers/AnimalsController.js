@@ -34,6 +34,14 @@ export class AnimalsController extends BaseController {
   async createAnimal(request, response, next) {
     try {
       const animalData = request.body
+
+      // GRAB user id using bearer token
+      // @ts-ignore
+      const userId = request.userInfo.id
+
+      // attach actual user's id to request body, never trust the client
+      animalData.creatorId = userId
+
       const animal = await animalsService.createAnimal(animalData)
       response.send(animal)
     } catch (error) {
