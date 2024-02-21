@@ -8,8 +8,10 @@ export class AnimalsController extends BaseController {
     super('api/animals')
     this.router
       .get('', this.getAnimals)
+      // NOTE we supply the animal id here in our route parameters so we can use it in our service to only get animalShows pertaining to a certain animal
       .get('/:animalId/showanimals', this.getAnimalShowsByAnimalId)
-      // NOTE middleware, all requests under this .use require a bearer token from your Auth0 
+      // NOTE middleware, all requests under this .use require a bearer token from your Auth0
+      // NOTE all requests that pass through this middleware will have userInfo as a property that can be accessed on the request
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createAnimal)
   }
@@ -52,11 +54,12 @@ export class AnimalsController extends BaseController {
     try {
       const animalData = request.body
 
-      // GRAB user id using bearer token
+      // NOTE grab user id using bearer token, matches the id of the user stored in the account collection
       // @ts-ignore
       const userId = request.userInfo.id
 
-      // attach actual user's id to request body, never trust the client
+
+      // NOTE attach actual user's id to request body, never trust the client
       animalData.creatorId = userId
 
       const animal = await animalsService.createAnimal(animalData)

@@ -8,6 +8,7 @@ export class ShowsController extends BaseController {
     this.router
       .get('', this.getShows)
       .post('', this.createShow)
+      // NOTE we supply a showId in our parameters that we use to only get showAnimals participating in a specific show
       .get('/:showId/showanimals', this.getShowAnimalsByShowId)
   }
 
