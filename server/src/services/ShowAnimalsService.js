@@ -4,6 +4,7 @@ class ShowAnimalsService {
 
   async createShowAnimal(showAnimalData) {
     const showAnimal = await dbContext.ShowAnimals.create(showAnimalData)
+    // NOTE you cannot create and populate on the same line, on a create your must drop a line down and await your populates on the mongoose object
     await showAnimal.populate('animal')
     await showAnimal.populate('show')
     return showAnimal
